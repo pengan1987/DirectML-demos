@@ -11,7 +11,7 @@ torch.set_default_device(dml)
 
 model_path = "D:\\phi_1_5"
 
-model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True).to(dml)
+model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True)
 
 
 tokenizer = AutoTokenizer.from_pretrained(model_path,trust_remote_code=True)
