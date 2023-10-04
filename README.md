@@ -1,3 +1,4 @@
+
 # PyTorch-DirectML inference example
 This repository are examples showing how to using PyTorch-DirectML to run some generative models. To give potential developers a quick hands on example of platform neutral AI applications.
 
@@ -27,3 +28,17 @@ This is the popular Stable Diffusion model, easy to migrate, just set `pipeline.
 **Tested Hardware**
 - [OK] Ryzen 7 5800H/16GB RAM/Vega 8 iGPU(GCN5)
 - [Limited] i5 7200U/20GB RAM/UHD620 iGPU(Gen9.5), 9.9GB shared VRAM available, out of VRAM when generating 512x512 image, 448x448 works.
+
+### ChatGLM
+Currently I don't have a GPU with high VRAM, when I running original ChatGLM with DirectML PyTorch extension I always get insufficient VRAM error. However I can run GhatGLM on DirectML using [ChatGLM-6b-onnx-u8s8](https://huggingface.co/K024/ChatGLM-6b-onnx-u8s8) and `onnxruntime-directml`. Just change the `model.py` from `providers = ["CPUExecutionProvider"]` to `providers = ["DmlExecutionProvider"]` then it will work with DirectML GPU, no other code change need.
+
+**Tested Hardware**
+-[OK] RTX4060 8GB
+-[OK] i5 7200U/20GB RAM/UHD620 iGPU(Gen9.5), slow 5~6s/token but works!
+
+### ChatRWKV
+ChatRWKV used a string strategy to describe which device to use, so you have to change `rwkv\model.py` to use your DirectML GPU, please look at my [commit](https://github.com/BlinkDL/ChatRWKV/pull/174/files) here.
+If you are using a virtual enviroment in Python and using `rwkv` pypi package, you need change the `Lib\site-packages\rwkv\model.py` file.
+
+When `model.py` file changed, you need set environment variable `RWKV_DML_ON="1"` for example in Python it's `os.environ["RWKV_DML_ON"] = '1'`
+then change the strategy from `cuda fp16` to `dml fp16` then it will works.
